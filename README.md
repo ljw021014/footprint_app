@@ -1,17 +1,40 @@
-# footprint_app
+# Footprint: 위치 기반 감정 기록 및 실시간 공유 서비스
 
-A new Flutter project.
+## 프로젝트 개요
+'Footprint'는 사용자가 특정 위치에 자신의 감정이나 추억을 기록하고, 다른 사용자가 해당 위치의 반경 50m 이내로 접근했을 때만 그 기록을 열람할 수 있도록 설계된 위치 기반 감정 공유 서비스입니다.
 
-## Getting Started
+디지털 인터페이스가 물리적 공간과 결합하여 인간의 감정적 기억과 경험을 어떻게 매개하고 확장할 수 있는지 탐구하고자 기획되었으며, Flutter 프론트엔드와 Firebase 백엔드를 실시간으로 연동하여 구현하였습니다.
 
-This project is a starting point for a Flutter application.
+## 주요 기능
+1. **위치 기반 실시간 감정 기록 (Create):** - GPS 권한을 획득하여 사용자의 현재 위도·경도 좌표를 실시간으로 수집합니다.
+    - 하단 [여기에 남기기] 버튼을 통해 현재 내가 서 있는 공간에 텍스트 형태의 감정 발자국을 클라우드 서버에 기록합니다.
 
-A few resources to get you started if this is your first Flutter project:
+2. **조건부 감정 열람 및 잠금 해제 시스템 (Read):**
+    - 지도 위에 주변 사용자들이 남긴 발자국 마커들이 표시됩니다.
+    - 하버사인(Haversine) 거리 계산 로직을 기반으로, 현재 내 위치와 마커의 거리가 **50m 이내일 때만 자물쇠가 편지 모양으로 바뀌며 '열어보기'가 활성화**됩니다. 50m보다 멀리 떨어져 있다면 접근이 제한됩니다.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+3. **Firebase Cloud Firestore 실시간 동기화:**
+    - 백엔드 데이터베이스로 NoSQL 기반의 Cloud Firestore를 활용하였습니다.
+    - `snapshots()` 스트림(Stream) 기술을 적용하여, 새로운 사용자가 편지를 등록하면 앱을 새로고침하거나 재시작하지 않아도 **지도 위에 실시간으로 마커가 즉시 업데이트**됩니다.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4. **다크 테마 기반 UX/UI:**
+    - 밤거리나 골목길에서 감정을 찾아다니는 서비스의 무드에 맞추어 CartoDB Dark Matter 스타일의 다크 테마 지도를 커스텀 적용하였으며, 은은한 오렌지 포인트 컬러로 감성적인 UI를 연출했습니다.
+
+## 기술 스택 및 아키텍처
+- **Framework:** Flutter (Dart)
+- **Backend:** Firebase Cloud Firestore (NoSQL Database)
+- **Libraries & Open Source:**
+    - `flutter_map`: OpenStreetMap 기반 다크 테마 지도 시각화
+    - `geolocator`: GPS 하드웨어 제어 및 고정밀 실시간 위치 스트리밍
+    - `firebase_core` & `cloud_firestore`: 백엔드 데이터 송수신 및 실시간 스트림 연동
+    - `shared_preferences`: 작성 중인 편지가 앱 종료 시 날아가지 않도록 하는 로컬 임시 저장(드래프트) 기능
+
+## 트러블슈팅 (Troubleshooting)
+### [좌표 중첩으로 인한 마커 은폐 및 터치 불가 이슈]
+- **문제 상황:** 에뮬레이터 환경이나 동일한 스팟에서 여러 명의 사용자가 연속해서 편지를 작성할 경우, 위도·경도 값이 소수점 끝자리까지 완벽하게 일치하여 **마커 여러 개가 1mm의 오차도 없이 완전히 포개어지는 현상**이 발생했습니다. 이로 인해 맨 위에 얹어진 최신 편지만 터치되고, 이전에 작성된 밑의 편지들은 영원히 열리지 않는 치명적인 UX 문제가 식별되었습니다.
+- **해결 방법 (Jitter 로직 구현):** 데이터베이스에서 읽어온 각 문서의 고유 ID(`doc.id.hashCode`)를 시드값으로 삼는 수학적 난수 생성기(`Random`)를 도입했습니다. 원본 좌표 데이터는 그대로 보존하여 50m 거리 계산의 정확성을 유지하되, **지도 화면에 마커를 렌더링할 때만 반경 5~10m 내외로 미세한 오차(Offset)를 더해 사방으로 타다닥 흩뿌려지도록 분산 로직을 구현**했습니다. 이를 통해 동일 좌표에 누적된 데이터의 시각적 가독성을 확보하고 각각 개별 터치가 가능하도록 트러블슈팅을 완료했습니다.
+
+## 실행 화면
+
+1. 메인 지도 화면 (내 위치 마커 및 주변에 흩뿌려진 감정 마커들)
+2. 감정 발자국 열람 및 작성 화면
