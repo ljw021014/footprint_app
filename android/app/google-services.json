@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1057827965755",
+    "project_id": "footprint-ce93c",
+    "storage_bucket": "footprint-ce93c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057827965755:android:54119e550c89f353d7451e",
+        "android_client_info": {
+          "package_name": "com.example.footprint_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKaShIVbGFW7crlv9tRr1j3VV8RdTLPkU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

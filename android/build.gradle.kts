@@ -1,3 +1,8 @@
+// 👇 가장 윗부분에 플러그인 블록을 새로 추가했습니다!
+plugins {
+    id("com.google.gms.google-services") version "4.4.1" apply false
+}
+
 allprojects {
     repositories {
         google()
