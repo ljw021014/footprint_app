@@ -35,6 +35,9 @@
 - **해결 방법 (Jitter 로직 구현):** 데이터베이스에서 읽어온 각 문서의 고유 ID(`doc.id.hashCode`)를 시드값으로 삼는 수학적 난수 생성기(`Random`)를 도입했습니다. 원본 좌표 데이터는 그대로 보존하여 50m 거리 계산의 정확성을 유지하되, **지도 화면에 마커를 렌더링할 때만 반경 5~10m 내외로 미세한 오차(Offset)를 더해 사방으로 타다닥 흩뿌려지도록 분산 로직을 구현**했습니다. 이를 통해 동일 좌표에 누적된 데이터의 시각적 가독성을 확보하고 각각 개별 터치가 가능하도록 트러블슈팅을 완료했습니다.
 
 ## 실행 화면
-
 1. 메인 지도 화면 (내 위치 마커 및 주변에 흩뿌려진 감정 마커들)
+<img width="180" height="350" alt="MP_1" src="https://github.com/user-attachments/assets/e6402ea2-f45a-4a58-a930-183d48232a6e" />
+
 2. 감정 발자국 열람 및 작성 화면
+<img width="180" height="350" alt="MP_2" src="https://github.com/user-attachments/assets/edbb307b-9303-4a09-975c-7704d92e1a21" />
+<img width="180" height="350" alt="MP_3" src="https://github.com/user-attachments/assets/1b4e3877-8c25-4cb7-af3b-edb380a657cf" />
